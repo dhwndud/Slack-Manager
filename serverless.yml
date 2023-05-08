@@ -1,0 +1,81 @@
+# 해당 YAML 파일은 [AWS Serverless Application Model (SAM)의 구성 파일] 이다.
+
+frameworkVersion: '3'             # Serverless Framework의 버전을 지정하는 옵션
+service: slack-chat-gpt-bot
+provider:
+  name: aws                       # 사용할 서비스 제공 업체의 이름 (예: aws)
+  runtime: python3.9              # 'lamda' 람다 함수에 대한 런타임 환경
+  region: us-east-1               # 'lamda' 람다 함수를 배포할 AWS 지역
+  iam:
+    role:
+      statements:
+        - Effect: Allow           # 정책이 수행할 작업에 대한 허용/거부를 결정, 'Allow'나 'Deny' 값을 지정할 수 있음.
+          Action:                    # 허용/거부할 작업을 지정함.
+            - lambda:InvokeFunction
+            - lambda:InvokeAsync
+          Resource: "*"             # 허용/거부할 대상(리소스)을 지정합니다.
+        - Effect: Allow
+          Action:
+            - 's3:ListBucket'
+            - 's3:GetObject'
+            - 's3:GetObjectAcl'
+            - 's3:PutObject'
+            - 's3:PutObjectAcl'
+            - 's3:ReplicateObject'
+            - 's3:DeleteObject'
+          Resource:
+            # AWS 리소스에 대한 ARN(Amazon Resource Name)을 지정할 수 있음.
+            - arn:aws:s3:::${env:SLACK_INSTALLATION_S3_BUCKET_NAME}
+            - arn:aws:s3:::${env:SLACK_INSTALLATION_S3_BUCKET_NAME}/*
+            - arn:aws:s3:::${env:SLACK_STATE_S3_BUCKET_NAME}
+            - arn:aws:s3:::${env:SLACK_STATE_S3_BUCKET_NAME}/*
+            - arn:aws:s3:::${env:OPENAI_S3_BUCKET_NAME}
+            - arn:aws:s3:::${env:OPENAI_S3_BUCKET_NAME}/*
+  environment:        # 환경 설정
+    SERVERLESS_STAGE: ${opt:stage, 'prod'}
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    SLACK_CLIENT_ID: ${env:SLACK_CLIENT_ID}
+    SLACK_CLIENT_SECRET: ${env:SLACK_CLIENT_SECRET}
+    SLACK_SCOPES: ${env:SLACK_SCOPES}
+    SLACK_INSTALLATION_S3_BUCKET_NAME: ${env:SLACK_INSTALLATION_S3_BUCKET_NAME}
+    SLACK_STATE_S3_BUCKET_NAME: ${env:SLACK_STATE_S3_BUCKET_NAME}
+    OPENAI_S3_BUCKET_NAME: ${env:OPENAI_S3_BUCKET_NAME}
+    OPENAI_TIMEOUT_SECONDS: 25
+    SLACK_APP_LOG_LEVEL: WARN
+    TRANSLATE_MARKDOWN: true
+
+functions:
+  # functions는 AWS의 람다를 의미, 독립적인 배포 단위 / 클라우드에서 배포되는 단순 코드
+  app:
+    handler: main_prod.handler   # Handler 함수 실행
+    timeout: 29                  # 'timeout' 속성을 통해 함수의 실행 시간 제한을 29초로 설정하고 있음.
+    events:
+      - httpApi:                # 'httpApi' 이벤트 유형을 사용하여 HTTP API 경로 및 메서드를 정의하고 있음.
+          path: /slack/events   # '/slack/events' 경로로 'POST' 요청을 받으면 'app' 함수가 호출되고
+          method: post
+      - httpApi:
+          path: /slack/install  # '/slack/install' 경로로 'GET' 요청을 받으면 'app' 함수가 호출
+          method: get
+      - httpApi:
+          path: /slack/oauth_redirect   # '/slack/oauth_redirect' 경로로 'GET' 요청을 받으면 'app' 함수가 호출
+          method: get
+
+package:
+  patterns:
+    - "!.venv/**"
+    - "!node_modules/**"
+    - "!.idea/**"
+#'package' 속성 아래의 'patterns'속성은 배포할 패키지의 파일/폴더 경로를 지정하는 속성 입니다.
+# 이 속성을 사용하여 배포할 파일/폴더를 선택하고, 배포에서 제외할 파일,폴더를 지정할 수 있습니다.
+
+plugins:
+  - serverless-python-requirements
+custom:
+  pythonRequirements:
+    zip: true # 배포 패키지의 크기를 줄인다.
+    slim: true # 기본 PYTHON 라이브러리를 제외한 종속성만 포함한다.
+    dockerizePip: true  # This option must be enabled for including Linux (compatible *.so files)
+                        # Linux 호환성을 유지하기 위해 Linux에서 빌드된 C 확장자 모듈을 포함하는데 필요한 Docker 환경을 생성합니다.
+
+# plugins 항목에서는 serverless-python-requirements 플러그인을 사용 / Python 종속성을 관리하는 데 도움이 됨.
+# 'custom' 항목에서는  pythonRequirements 섹션을 정의

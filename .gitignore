@@ -1,0 +1,24 @@
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+*.py[cod]
+__pycache__/
+.venv*
+.env*
+# JetBrains PyCharm settings
+.idea/
+.DS_Store
+node_modules/
+.serverless/
+.requirements.zip
+package.json
+package-lock.json
+
+# 특정 파일이나 디렉토리를 git 버전 관리에서 의도적으로 추적하지 않도록 설정하는 파일을 'gitignore'이라 한다.
+#-----------------------------------------------------------------------------------
+# gitignore 에 포함되는 제외해야할 파일 유형
+ # 로그, 컴파일 파일 같은 용량이 큰 파일 : Java 컴파일 파일(.class), 모듈 파일(vendor, node_modules)
+ # 보안 관련 키 파일 : AWS access key, API token key, .env
+#-----------------------------------------------------------------------------------
