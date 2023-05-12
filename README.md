@@ -11,10 +11,21 @@
 	<p>🛠 Tools 🛠</p>
 </div>
 <div align=center>
-	<img src="https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=flat&logo=VisualStudioCode&logoColor=white" />
+		<img src="https://img.shields.io/badge/python-3776AB?style=flat&logo=python&logoColor=white" />
+			<img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=python&logoColor=white" />
+				<img src="https://img.shields.io/badge/YAML-CB171E?style=flat&logo=YAML&logoColor=white" />
 	<br>
 	<img src="https://img.shields.io/badge/AWS-232F3E?style=flat&logo=AmazonAWS&logoColor=white" />
 	<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white" />
+		<img src="https://img.shields.io/badge/PyCharm-000000?style=flat&logo=PyCharm&logoColor=white" />
+		<img src="https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=flat&logo=VisualStudioCode&logoColor=white" />
+	<br>
+	<br>
+	<div align=center>
+	<p>👩‍💻 Profile. 👩‍💻</p>
+</div>
+		<img src="https://img.shields.io/badge/Instagram-E4405F?style=flat&logo=Instagram&logoColor=white" />
+	<img src="https://img.shields.io/badge/Facebook-1877F2?style=flat&logo=Facebook&logoColor=white" />
 </div>
 
 
